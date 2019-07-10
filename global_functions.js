@@ -36,10 +36,10 @@ ReS = function(res, data, code){ // Success Web Response
 
     if(typeof code !== 'undefined') res.statusCode = code;
 
-    return res.json(send_data)
+    return res.json(send_data);
 };
 
 //This is here to handle all the uncaught promise rejections
-process.on('unhandledRejection', error => {
-    console.error('Uncaught Error', pe(error));
-});
+// process.on('unhandledRejection', error => {
+//     console.error('Uncaught Error', pe(error));
+// });

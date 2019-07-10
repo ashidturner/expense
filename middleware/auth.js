@@ -1,7 +1,9 @@
+/*jshint esversion: 8 */
+
 const jwt = require('express-jwt');
 
 const getTokenFromHeaders = (req) => {
-    console.log('headers are ',req.headers)
+    // console.log('headers are ',req.headers)
   const { headers: { authorization } } = req;
 
   if(authorization && authorization.split(' ')[0] === 'Bearer') {

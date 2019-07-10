@@ -56,17 +56,12 @@ mongoose.connect(uristring, {
 });
 
 
-
-
-app.use('/', function(req, res){
-  res.statusCode = 200;//send the appropriate status code
-  res.json({status:"success", message:"Welcome home", data:{}})
-});
-
-
-
 app.use('/v1', v1);
 
+// app.use('/', function(req, res){
+//   res.statusCode = 200;//send the appropriate status code
+//   res.json({status:"success", message:"Welcome home", data:{}})
+// });
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

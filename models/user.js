@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var Counter = require('./counter');
 var Schema = mongoose.Schema;
-const jwt               = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 let UserSchema = Schema({
     id: {type: Number},
@@ -43,7 +43,13 @@ let UserSchema = Schema({
     mobileNumber:{
         type:String,
         minlength:10
-    }
+    },
+    budget: [
+        {
+            amount: { type: Number, required: false},
+            createdOn: { type:Date,required:false, default : Date.now }
+        }
+    ],
 },{runSettersOnQuery: true,usePushEach: true} 
 // 'runSettersOnQuery' is used to implement the specifications in our model schema such as the 'trim' option
 )
