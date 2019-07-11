@@ -44,7 +44,7 @@ module.exports.createExpense = createExpense;
  *
  * @param req
  * @param res
- * @param expenseId
+ * @query expenseId
  * @returns {Promise<*>}
  */
 
@@ -63,6 +63,24 @@ const updateExpense =  async function(req,res){
     if(err) return ReE(res, {   errorDescription:"Error while updating expense" },500);
 
     return ReS(res, {successObject: "Updated expense successfully"},204);
-}
+};
 
 module.exports.updateExpense = updateExpense;
+
+
+/**
+ * delete the expense as in setting its state as inactive  
+ *
+ * @param req
+ * @param res
+ * @query expenseId
+ * @returns {Promise<*>}
+ */
+const deleteExpense = async function(req,res){
+    let expenseId = req.query.expenseId;
+    [err,expense] = await to(Expense.findOneAndUpdate( { "id":expenseId },{ "$set" : { "isActive":false } } ));
+    if(err) return ReE(res, "Unable to delete the expense", 500);
+    return ReS(res, { "successObject":"Expense deleted successfully" }, 200);
+};
+
+module.exports.deleteExpense = deleteExpense;

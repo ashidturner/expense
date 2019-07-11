@@ -44,13 +44,10 @@ let UserSchema = Schema({
         type:String,
         minlength:10
     },
-    budget: [
-        {
-            amount: { type: Number, required: false},
-            createdOn: { type:Date,required:false, default : Date.now }
-        }
-    ],
-},{runSettersOnQuery: true,usePushEach: true} 
+    budget: { type: Number, required: false},
+        
+    
+},{runSettersOnQuery: true,usePushEach: true, useFindAndModify:false} 
 // 'runSettersOnQuery' is used to implement the specifications in our model schema such as the 'trim' option
 )
 

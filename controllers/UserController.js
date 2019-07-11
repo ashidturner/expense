@@ -1,7 +1,9 @@
 /*jshint esversion: 8 */
 const User = require('../models/user');
 const Category = require('../models/category');
+const Expense = require('../models/expense');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const authService = require('../service/authService');
 const passport = require('passport');
 
@@ -126,3 +128,85 @@ const addCategory = async function(req,res){
     return ReS(res,{successObject:" New category added"},201);
 };
 module.exports.addCategory = addCategory;
+
+
+
+/**
+ * Creates budget  
+ *
+ * @param req
+ * @param res
+ * @body userId
+ * @body amount
+ * @returns {Promise<*>}
+ */
+
+
+const createBudget = async function(req,res){
+    let amount = req.body.amount;
+    let userId = req.body.userId;
+
+    [err,user] = await to(User.findOneAndUpdate({"id":userId},{"$set" : {"budget": amount} }));
+    if(err){
+        console.log(err);
+        return ReE(res, "Error in creating budget", 500);
+    }
+    if(!user)    return ReE(res, "User does not exist with this userId", 404);
+         
+    return ReS(res, {"successObject": "Budget created for you"}, 201);
+};
+module.exports.createBudget = createBudget;
+
+
+const generateExpenseAndBudgetSummary = async function(req,res){
+    let userId = req.query.userId;
+    
+    [err,user] = await to(User.findOne({"id":userId}));
+    if(err) return ReE(res, "Unable to retrieve user details", 500);
+    if(!user) return ReE(res, "User not found", 404);
+
+    let budget = user.budget;
+
+    let aggregateQuery = [
+        {
+            "$match":{ "user" : mongoose.Types.ObjectId(user._id)}
+        },
+        {
+            "$group":{
+                "_id":"$category",
+                "totalExpense": {
+                    "$sum": "$amount"
+                }
+            }
+        },
+        {
+            "$lookup":{
+                "from":"categories",
+                "localField": '_id',
+                "foreignField": '_id',
+                "as":'category'
+            }
+        },
+        {
+            "$unwind":"$category"
+            
+        },
+        {
+            "$project":{
+                "totalExpense":1,
+                "categoryName":"$category.name",
+                "_id":0
+              }
+        }
+    ];
+    [err,expense] = await to(Expense.aggregate(aggregateQuery));
+    if(err) return ReE(res, 'Unable to fetch expenses', 500);
+    let response = {
+        budget: budget,
+        expenseSummary: expense
+    };
+    console.log(response);
+    return ReS(res, response, 200);
+
+};
+module.exports.generateExpenseAndBudgetSummary = generateExpenseAndBudgetSummary;

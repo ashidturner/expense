@@ -19,16 +19,20 @@ let ExpenseSchema = Schema({
         type:Number,
         required:true
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref:"User",
+        required:true
+    },
+    isActive: {
+        type:Boolean,
+        default:true
+    },
     createdAt: {
         type: Date,
         required: false,
         default : Date.now
 
-    },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref:"User",
-        required:true
     },
     updatedAt: {
         type: Date,
